@@ -1,5 +1,5 @@
 //var serverurl = 'https://tailwindserverweb.onrender.com';
-var serverurl = 'http://192.168.14.7:3000';
+var serverurl = 'http://10.0.0.12:3000';
 
 var hasFetchedArticles = false;
 const articshow = []

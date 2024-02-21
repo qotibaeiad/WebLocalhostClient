@@ -39,7 +39,14 @@
 .display-none {
   @apply hidden;
 }
+#search-results li {
+  padding: 8px;
+  cursor: pointer;
+}
 
+#search-results li:hover {
+  background-color: #948f8f;
+}
 /* 
 .cont div {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

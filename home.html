@@ -38,6 +38,9 @@
                   </svg>
               </div>
               <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required>
+              <ul id="search-results" class="list-none p-0 m-0 absolute top-full left-0 w-full bg-white border border-gray-300 border-t-0 hidden text-black dark:text-white dark:bg-gray-700 rounded-lg  ">
+                <!-- Autocomplete suggestions will be added here dynamically -->
+              </ul>      
               <button id="searchbutton" type="button" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
             </div>
       </form>
@@ -153,6 +156,47 @@
         // your code here:
         //sendRequestToParent({ method: 'getAssets' })
     })
+
+     //auto complete word
+     function autocomplete() {
+        const input = document.getElementById('default-search').value.toLowerCase();
+        const resultsContainer = document.getElementById('search-results');
+        resultsContainer.innerHTML = ''; // Clear previous results
+
+        if (input.trim() !== '') {
+            // use api
+            fetch(`https://api.datamuse.com/sug?s=${input}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.word;
+                        li.addEventListener('click', () => {
+                            document.getElementById('default-search').value = item.word;
+                            resultsContainer.style.display = 'none';
+                        });
+                        resultsContainer.appendChild(li);
+                    });
+                    resultsContainer.style.display = data.length > 0 ? 'block' : 'none';
+                })
+                .catch(error => console.error('Error fetching suggestions:', error));
+        } else {
+            resultsContainer.style.display = 'none';
+        }
+    }
+
+    // Attach the event listener after the page has loaded
+  document.getElementById('default-search').addEventListener('input', autocomplete);
+
+  // Add click event listener to close suggestions on document click
+  document.addEventListener('click', function (event) {
+    const searchInput = document.getElementById('default-search');
+    const resultsContainer = document.getElementById('search-results');
+
+    if (event.target !== searchInput && !searchInput.contains(event.target) && !resultsContainer.contains(event.target)) {
+      resultsContainer.style.display = 'none';
+    }
+  });
   </script>
   <script src="https://morethanwallet.com/appstore/index.js"></script>
   <script src="./script.js"></script>
