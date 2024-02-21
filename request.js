@@ -331,14 +331,26 @@ function openInterestModal() {
   document.getElementById('interestModal').classList.remove('hidden');
 }
 
-function closeInterestModal() {
-  document.getElementById('interestModal').classList.add('hidden');
-  window.location.href = 'index.html';            
-}
+
 
 function toggleCategory(containerId) {
   const categoryContainer = document.getElementById(containerId);
   categoryContainer.classList.toggle('selected-category');
+}
+
+function getSelectedCategories() {
+  const selectedCategories = [];
+
+  // Get all elements with the class 'selected-category'
+  const selectedCategoryElements = document.querySelectorAll('.selected-category');
+
+  // Iterate through the selected elements and extract category names
+  selectedCategoryElements.forEach((element) => {
+      const categoryName = element.querySelector('.text-white').innerText;
+      selectedCategories.push(categoryName);
+  });
+
+  return selectedCategories;
 }
 
 function validateForm() {
@@ -348,18 +360,25 @@ function validateForm() {
   var password = document.getElementById('password').value;
   var confirmPassword = document.getElementById('confirmPassword').value;
   var country = document.getElementById('country').value;
-
-  if (username === '' || email === '' || phone === '' || password === '' || confirmPassword === '' === '' || confirmPassword === '' || country === '') {
+  const selectedCategories = getSelectedCategories();
+  console.log(selectedCategories)
+  if (username === '' || email === '' || phone === '' || password === '' || confirmPassword === '' === '' || confirmPassword === '' || country === ''|| selectedCategories=='') {
       alert('Please fill in all fields.');
   } else {
       if(password != confirmPassword ){
           alert('The password does not match');
       }
       else{
-        handleUserRegistration(username,password,email,phone,'global');
+        handleUserRegistration(username,password,email,phone,selectedCategories);
         //openInterestModal()
           }
 }}
+
+function closeInterestModal() {
+  document.getElementById('interestModal').classList.add('hidden');
+  validateForm()
+  window.location.href = 'home.html';            
+}
 
 
 fetchAndDisplayArticles('general');
