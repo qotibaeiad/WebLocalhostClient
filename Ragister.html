@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./logo/logo.jpeg">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        .selected-category {
+            border: 2px solid #ffffff; 
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="flex justify-center items-center h-screen bg-gray-900">
+        <div class="w-96 p-6 shadow-lg bg-white rounded-md">
+            <h1 class="text-3xl block text-center font-semibold"><i class="fa-solid fa-user"></i> Register</h1>
+            <hr class="mt-3">
+            <div class="mt-3">
+                <label for="username" class="block text-base mb-2">Username</label>
+                <input type="text" id="username" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Username..." />
+            </div>
+            <div class="mt-3">
+                <label for="email" class="block text-base mb-2">Email</label>
+                <input type="email" id="email" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Email..." />
+            </div>
+            <div class="mt-3">
+                <label for="phone" class="block text-base mb-2">Phone</label>
+                <input type="tel" id="phone" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Phone..." />
+            </div>
+            <div class="mt-3">
+                <label for="password" class="block text-base mb-2">Password</label>
+                <input type="password" id="password" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Password..." />
+            </div>
+            <div class="mt-3">
+                <label for="confirmPassword" class="block text-base mb-2">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Confirm Password..." />
+            </div>
+            <div class="mt-3">
+                <label for="country" class="block text-base mb-2">Country</label>
+                <select id="country" class="border w-full text-base px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600">
+                    <option value="" disabled selected>Select your country</option>
+                    <option value="usa">United States</option>
+                    <option value="canada">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                    <!-- Add more countries as needed -->
+                </select>
+            </div>
+            <div class="mt-5">
+                <button id="registerBtn" class="border-2 border-bg-gray-800 bg-gray-800 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-gray-800 font-semibold" onclick="validateForm()"><i class="fa-solid fa-right-to-bracket"></i>&nbsp;&nbsp;Register</button>
+            </div>
+        </div>
+    </div>
+    <div id="interestModal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-screen">
+        <div class="flex justify-center items-center mt-5">
+            <div class="bg-gray-700 p-6 rounded-md border-2">
+                <!-- Image and Category Name at the top -->
+                <div class="mb-4 text-center">
+                    <!-- Display a gallery of images with associated categories -->
+                    <div class="mb-2 flex flex-wrap">
+                        <div id="sportsCategory" class="category-container w-1/4 mb-4 mr-10">
+                            <img src="https://st4.depositphotos.com/1005563/25369/i/450/depositphotos_253697550-stock-photo-award-winning-championship-concept-trophy.jpg" class="category-image w-full h-32 rounded-md cursor-pointer" onclick="toggleCategory('sportsCategory')">
+                            <p class="text-sm text-white mt-2">Sports</p>
+                        </div>
+                        <div id="technologyCategory" class="category-container w-1/4 mb-4 mr-10">
+                            <img src="https://d1y8sb8igg2f8e.cloudfront.net/images/7_things_you_should_read_about_technologys_rol.width-800.jpg" class="category-image w-full h-32 rounded-md cursor-pointer" onclick="toggleCategory('technologyCategory')">
+                            <p class="text-sm text-white mt-2">Technology</p>
+                        </div>
+                        <div id="musicCategory" class="category-container w-1/4 mb-4 mr-5">
+                            <img src="https://i.ebayimg.com/images/g/QQAAAOSwk-JiEK3v/s-l1200.webp" class="category-image w-full h-32 rounded-md cursor-pointer" onclick="toggleCategory('musicCategory')">
+                            <p class="text-sm text-white mt-2">Music</p>
+                        </div>
+                    </div>
+                    <div class="mb-2 flex flex-wrap">
+                        <div id="EconomyCategory" class="category-container w-1/4 mb-4 mr-10">
+                            <img src="https://www.thestatesman.com/wp-content/uploads/2020/08/ECONOMY.jpg" class="category-image w-full h-32 rounded-md cursor-pointer" onclick="toggleCategory('EconomyCategory')">
+                            <p class="text-sm text-white mt-2">Economy</p>
+                        </div>
+                        <div id="PolicyCategory" class="category-container w-1/4 mb-4 mr-10">
+                            <img src="https://images.blog.airmason.com/wp-content/uploads/2023/10/Understanding-the-Essence-Company-Policies-Definition.png" class="category-image w-full h-32 rounded-md cursor-pointer" onclick="toggleCategory('PolicyCategory')">
+                            <p class="text-sm text-white mt-2">Policy</p>
+                        </div>
+                        <div id="cultureCategory" class="category-container w-1/4 mb-4 mr-4">
+                            <img src="https://assets.ltkcontent.com/images/7206/examples-of-culture_7abbbb2796.jpg" class="category-image w-full h-32 rounded-md cursor-pointer" onclick="toggleCategory('cultureCategory')">
+                            <p class="text-sm text-white mt-2">Culture</p>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    <h2 class="text-xl font-semibold text-white ">Choose your preferred Category</h2>
+                </div>
+                <!-- Save Button -->
+                <div class="mt-4">
+                    <button class="bg-gray-800 text-white px-4 py-2 rounded-md hover:text-black hover:bg-white " onclick="closeInterestModal()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+    <script src="./request.js"></script>
+</body>
+</html>
