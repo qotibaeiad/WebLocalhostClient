@@ -132,9 +132,13 @@ function loadPage(page) {
   dropdownMenu.classList.add('hidden');
   dropdownMenu.classList.remove('opacity-100');
 
+  // Check if the user is navigating to the 'index' page
+  if (page === 'index') {
+    // Clear the 'loggedInUser' from local storage
+    localStorage.removeItem('loggedInUser');
+  }
+
   window.location.href = page + '.html';
 
-
-  //searchArticles('ronaldo');
-  //fetchAndDisplayArticles('general');
+  // You can include additional logic or function calls based on the page if needed
 }

@@ -4,6 +4,8 @@ var serverurl = 'http://172.20.10.13:3000';
 var hasFetchedArticles = false;
 const articshow = []
 let indexarticle;
+
+
 const spin = document.getElementById('loadingSpinner');
 
 function changeContentInMyDiv() {
@@ -37,7 +39,7 @@ async function searchArticles() {
             
           const articleElement = document.createElement('div');
           articleElement.innerHTML = `
-          <div class="hover:scale-90 mb-6 flex flex-wrap transform shadow-lg transition-transform duration-300 ease-in-out text-black dark:text-wight mt-16 mb-16 p-6">
+          <div class="hover:scale-90  flex flex-wrap transform shadow-lg transition-transform duration-300 ease-in-out text-black dark:text-wight mt-16 mb-16 p-6">
             <div class="mb-6 ml-auto w-full shrink-0 grow-0 basis-auto px-3 md:mb-0 md:w-3/12">
               <div class="relative mb-6 overflow-hidden rounded-lg bg-cover bg-no-repeat shadow-lg dark:shadow-black/20" data-te-ripple-init data-te-ripple-color="light">
                 <img src="${article.urlToImage}" onclick="" class="lg:w-full" alt="Louvre" />
@@ -59,11 +61,14 @@ async function searchArticles() {
                   ${article.description}
                 </p>
                 <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite(${i})">
-                  <div id="staricon${i}" class="star-icon"></div>
-                </a>
+  <div id="staricon${i}" class="star-icon"></div>
+</a>
               </div>
             </div>
           `;
+
+      //    <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite('${getLoggedInUser()}','${article.title}','${article.author}','${article.category}','${article.url}',${i})">
+
           
           articlesContainer.appendChild(articleElement);
           updateStarIcon(i); // Update star icon initially
@@ -97,14 +102,16 @@ async function checkUser(username, password) {
 
     if (data.success) {
 
+      localStorage.setItem('loggedInUser', username);
       console.log('success');
+      return true;
       // Perform actions after successful authentication (e.g., redirect, display content)
       return true;
     } else {
       console.log('not success');
+      return false;
       // Authentication failed
       // Handle authentication failure (e.g., display an error message)
-      return false;
     }
   } catch (error) {
     console.error('Error during login request:', error);
@@ -126,16 +133,21 @@ function getSelectedValue() {
 }
 
 
-
-function toggleFavorite(i) {
+//add article
+//function toggleFavorite(username,title, content, author, category, url,i) {
+  function toggleFavorite(i) {
   checkfavorite[i] = !checkfavorite[i];
   updateStarIcon(i);
+  // if(checkfavorite[i]){
+  //   handleArticleAddition(username,title, content, author, category, url);
+  // }
+  
 }
 
 
 function updateStarIcon(i) {
   // Get the star icon element
-  var starIcon = document.getElementById("staricon" + i);
+  var starIcon = document.getElementById(`staricon${i}`);
 
   // Update the SVG content based on the checkfavorite value
   if (checkfavorite[i]) {
@@ -296,11 +308,13 @@ function displayArticles(articles) {
                 ${article.description}
               </p>
               <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite(${i})">
-                <div id="staricon${i}" class="star-icon"></div>
+             <div id="staricon${i}" class="star-icon"></div>
               </a>
             </div>
           </div>
         `;
+        //              <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite('${getLoggedInUser()}','${article.title}','${article.author}','${article.category}','${article.url}',${i})">
+
 
         articlesContainer.appendChild(articleElement);
         updateStarIcon(i); // Update star icon initially
@@ -316,26 +330,22 @@ function displayArticles(articles) {
 
 
 async function checkUser(username, password) {
-  const apiUrl = serverurl+`/api/login?username=${username}&password=${password}`;
+  const apiUrl = serverurl + `/api/login?username=${username}&password=${password}`;
 
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
 
     if (data.success) {
-
+      localStorage.setItem('loggedInUser', username); // Save the logged-in user's username
       console.log('success');
-      // Perform actions after successful authentication (e.g., redirect, display content)
       return true;
     } else {
       console.log('not success');
-      // Authentication failed
-      // Handle authentication failure (e.g., display an error message)
       return false;
     }
   } catch (error) {
     console.error('Error during login request:', error);
-    // Handle other errors (e.g., network issues)
     return false;
   }
 }
@@ -473,7 +483,57 @@ function closeInterestModal() {
 }
 
 
-fetchAndDisplayArticles('general');
+async function addArticle(username,title, content, author, category, url) {
+  const apiUrl = serverUrl + '/api/add-article';
+
+  const articleData = {
+    username,
+    title,
+    content,
+    author,
+    category,
+    url,
+  };
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // You may include additional headers like authentication tokens if required
+      },
+      body: JSON.stringify(articleData),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log('Article added successfully');
+      return true;
+    } else {
+      console.log('Failed to add article');
+      return false;
+    }
+  } catch (error) {
+    console.error('Error during article addition request:', error);
+    return false;
+  }
+}
+
+async function handleArticleAddition(username,title, content, author, category, url) {
+  try {
+    const isArticleAdded = await addArticle(username,title, content, author, category, url);
+    if (isArticleAdded) {
+      alert('Article added successfully');
+      // Additional actions after successful article addition
+    } else {
+      alert('Failed to add article');
+    }
+  } catch (error) {
+    console.error('Error during article addition:', error);
+    alert('An error occurred during article addition');
+  }
+}
+
 
 function openarticl(index) {
   indexarticle = index;
@@ -482,3 +542,41 @@ function openarticl(index) {
   // Navigate to the new.html page
   window.location.href = 'new1.html?index=' + index;
 }
+
+
+function checkLoggedInUser() {
+  const loggedInUser = localStorage.getItem('loggedInUser');
+
+  if (loggedInUser) {
+    // User is logged in, perform necessary actions
+    console.log('Logged in user:', loggedInUser);
+    // You can use the loggedInUser variable throughout your code
+  } else {
+    // User is not logged in
+    console.log('No user is logged in');
+  }
+}
+
+// Call the function when the page loads
+
+function getLoggedInUser() {
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  return loggedInUser ? loggedInUser : null;
+}
+
+// Call the function when the page loads
+const loggedInUser = getLoggedInUser();
+
+// Now you can use `loggedInUser` throughout your code
+if (loggedInUser) {
+  console.log('User is logged in:', loggedInUser);
+} else {
+  console.log('No user is logged in');
+}
+
+checkLoggedInUser();
+
+
+
+
+fetchAndDisplayArticles('general');
