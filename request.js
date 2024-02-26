@@ -1,6 +1,6 @@
 //var serverurl = 'https://tailwindserverweb.onrender.com';
 var serverurl = 'http://10.0.0.12:3000';
-
+localStorage.setItem('serverurl',serverurl)
 var hasFetchedArticles = false;
 const articshow = []
 let indexarticle;
@@ -380,7 +380,7 @@ async function checkLogin() {
 //user ragister
 // Function to add a new user
 // Modify the addUser function in the client code
-async function addUser(username, password, email, phone, category) {
+async function addUser(username, password, email, phone, category,country,jobTitle,bio) {
   const apiUrl = serverurl + `/api/register`;
 
   const userData = {
@@ -389,6 +389,9 @@ async function addUser(username, password, email, phone, category) {
     email,
     phone,
     category,
+    country,
+    jobTitle,
+    bio,
   };
 
   try {
@@ -415,9 +418,9 @@ async function addUser(username, password, email, phone, category) {
   }
 }
 
-async function handleUserRegistration(username, password, email, phone, category) {
+async function handleUserRegistration(username, password, email, phone, category,country,jobTitle,bio) {
   try {
-    const isUserAdded = await addUser(username, password, email, phone, category);
+    const isUserAdded = await addUser(username, password, email, phone, category,country,jobTitle,bio);
     if (isUserAdded) {
       alert('User registered successfully');
       // Additional actions after successful registration (e.g., redirect)
@@ -464,6 +467,8 @@ function validateForm() {
   var confirmPassword = document.getElementById('confirmPassword').value;
   var country = document.getElementById('country').value;
   const selectedCategories = getSelectedCategories();
+  var jobTitle="empthy"
+  var bio="empthy"
   console.log(selectedCategories)
   if (username === '' || email === '' || phone === '' || password === '' || confirmPassword === '' === '' || confirmPassword === '' || country === ''|| selectedCategories=='') {
       alert('Please fill in all fields.');
@@ -473,7 +478,7 @@ function validateForm() {
       }
       else{
         localStorage.setItem('name',username)
-        handleUserRegistration(username,password,email,phone,selectedCategories);
+        handleUserRegistration(username,password,email,phone,selectedCategories,country,jobTitle,bio);
         //openInterestModal()
           }
 }}

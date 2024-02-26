@@ -129,6 +129,7 @@
 
   
   <script>
+    serverurl=localStorage.getItem('serverurl')
     const mtwAppConfig = {
         border: true // app border in the MTW page                    
     }       
@@ -191,7 +192,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 async function fetchNews(category) {
     try {
-      const response = await fetch(`http://10.0.0.12:3000/api/data?category=${category}`);
+      const response = await fetch(serverurl+`/api/data?category=${category}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -267,7 +268,7 @@ async function fetchNews(category) {
   // Function to fetch categories from the server
   const fetchCategories = async (username) => {
     try {
-      const response = await fetch(`http://10.0.0.12:3000/api/categories?username=${username}`);
+      const response = await fetch(serverurl+`/api/categories?username=${username}`);
       const data = await response.json();
       return data.categories || [];
     } catch (error) {
