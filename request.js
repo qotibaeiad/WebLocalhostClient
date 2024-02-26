@@ -1,5 +1,5 @@
 //var serverurl = 'https://tailwindserverweb.onrender.com';
-var serverurl = 'http://172.20.10.13:3000';
+var serverurl = 'http://10.0.0.12:3000';
 
 var hasFetchedArticles = false;
 const articshow = []
@@ -363,6 +363,7 @@ async function checkLogin() {
   try {
     const isAuthenticated = await checkUser(username, password);
     if (isAuthenticated) {
+      localStorage.setItem('name',username)
       loadPage('home');
       
     } else {
@@ -471,6 +472,7 @@ function validateForm() {
           alert('The password does not match');
       }
       else{
+        localStorage.setItem('name',username)
         handleUserRegistration(username,password,email,phone,selectedCategories);
         //openInterestModal()
           }
