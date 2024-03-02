@@ -100,6 +100,23 @@
 
 <script>
 
+function fetchAndCheckString(url, searchString) {
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(data => {
+      if (data.includes(searchString)) {
+        return data;
+      } else {
+        throw new Error('String not found in the fetched data');
+      }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
           const params = new URLSearchParams(window.location.search);
           const index = params.get('index');
@@ -110,8 +127,10 @@ document.addEventListener('DOMContentLoaded', function () {
           // Use the index and articshow array to fetch and display the content
           if (index !== null && articshow !== null) {
             const selectedArticle = articshow[index];
+            var url = articshow.url;
+            var cintent = articshow.content;
 
-            const originalText = selectedArticle.description;
+            const originalText = selectedArticle.content;
             document.getElementById("title").textContent = selectedArticle.title;
             document.getElementById("img").src = selectedArticle.urlToImage;
             const contentDiv = document.getElementById("content");
@@ -129,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     p.className = "font-serif text-base pb-5";
                     // Add the text of the sentence to the <p> element
                     p.textContent = trimmedSentence + ".";
+                    
                     // Append the <p> element to the content div
                     contentDiv.appendChild(p);
                 }
