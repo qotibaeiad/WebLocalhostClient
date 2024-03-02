@@ -1,6 +1,6 @@
 //var serverurl = 'https://tailwindserverweb.onrender.com';
-var serverurl = 'http://10.0.0.12:3000';
-localStorage.setItem('serverurl',serverurl)
+var serverurl = 'http://192.168.14.9:3000';
+localStorage.setItem('serverurl', serverurl);
 var hasFetchedArticles = false;
 const articshow = []
 let indexarticle;
@@ -35,7 +35,8 @@ async function searchArticles() {
         checkfavorite = new Array(data.articles.length); // Creates an array with length 5, all elements are initially undefined
         // Loop through articles and create HTML elements
         data.articles.forEach((article, i) => {
-          if (article.title && article.description && article.urlToImage) {
+          if (article.title && article.description && article.urlToImage && article.publishedAt && article.author
+            && article.url) {
             
           const articleElement = document.createElement('div');
           articleElement.innerHTML = `
@@ -60,14 +61,15 @@ async function searchArticles() {
                 <p class="text-black dark:text-white">
                   ${article.description}
                 </p>
-                <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite(${i})">
-  <div id="staricon${i}" class="star-icon"></div>
-</a>
+                <a href="#!" class="star-link" data-article-index="${i}" onclick="toggleFavorite('${article.author}','${article.title}','${article.description}','${article.url}','${article.urlToImage}','${article.publishedAt}',${i})">
+                <div id="staricon${i}" class="star-icon"></div>
+                </a>
+
+              
               </div>
             </div>
           `;
 
-      //    <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite('${getLoggedInUser()}','${article.title}','${article.author}','${article.category}','${article.url}',${i})">
 
           
           articlesContainer.appendChild(articleElement);
@@ -134,36 +136,67 @@ function getSelectedValue() {
 
 
 //add article
-//function toggleFavorite(username,title, content, author, category, url,i) {
-  function toggleFavorite(i) {
-  checkfavorite[i] = !checkfavorite[i];
-  updateStarIcon(i);
-  // if(checkfavorite[i]){
-  //   handleArticleAddition(username,title, content, author, category, url);
-  // }
-  
+
+
+
+function toggleFavorite(author, title, description, url, urlToImage, publishedAt) {
+  // Get the clicked star link
+  const starLink = event.target.closest('.star-link');
+
+  // Check if the star link is found
+  if (starLink) {
+    // Extract the article index from the data attribute
+    const articleIndex = starLink.dataset.articleIndex;
+    //handleArticleAddition(getLoggedInUser(), author, title, description, url, urlToImage,publishedAt);
+
+    // Check if the article index is available
+    if (articleIndex !== undefined) {
+      // Use the article index as needed
+      console.log("Article index:", articleIndex);
+    //   console.log(checkfavorite.length);
+    //    checkfavorite[i] = !checkfavorite[i];
+
+    //  if (checkfavorite[i]) {
+    //      handleArticleAddition(getLoggedInUser(), author, title, description, url, urlToImage,publishedAt);
+    //     updateStarIcon(i);
+    //    }
+      // Other logic related to toggling favorites
+    }
+  }
 }
 
+
+
+// ... (your existing code)
 
 function updateStarIcon(i) {
   // Get the star icon element
   var starIcon = document.getElementById(`staricon${i}`);
 
-  // Update the SVG content based on the checkfavorite value
-  if (checkfavorite[i]) {
-    starIcon.innerHTML = `
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="absolute bottom-4 right-4 h-6 w-6 text-blue-500 dark:text-white star-icon">
-        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" fill="blue"></path>
-      </svg>
-    `;
+  // Check if the element exists
+  if (starIcon) {
+    // Update the SVG content based on the checkfavorite value
+    if (checkfavorite[i]) {
+      starIcon.innerHTML = `
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="absolute bottom-4 right-4 h-6 w-6 text-blue-500 dark:text-white star-icon">
+          <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538 0 12 17.456 7.307 22l1.266-7.001L2 9.426h7.383L12 2z" fill="blue"></path>
+        </svg>
+      `;
+    } else {
+      starIcon.innerHTML = `
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="absolute bottom-4 right-4 h-6 w-6 text-blue-500 dark:text-white star-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l2.308 7.426h7.383l-5.955 4.573L16.693 22 12 17.456 7.307 22l1.266-7.001L2 9.426h7.383L12 2z" />
+        </svg>
+      `;
+    }
   } else {
-    starIcon.innerHTML = `
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="absolute bottom-4 right-4 h-6 w-6 text-blue-500 dark:text-white star-icon">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l2.308 7.426h7.383l-5.955 4.573L16.693 22 12 17.456 7.307 22l1.266-7.001L2 9.426h7.383L12 2z" />
-      </svg>
-    `;
+    console.error(`Element with ID staricon${i} not found`);
   }
 }
+
+
+
+
 
 // function fetchAndDisplayArticles(category) {
 //   document.getElementById('loadingSpinner').classList.remove('hidden');
@@ -234,14 +267,6 @@ function updateStarIcon(i) {
 function fetchAndDisplayArticles(category) {
   document.getElementById('loadingSpinner').classList.remove('hidden');
 
-  // Check if articles are present in local storage
-  const storedArticles = localStorage.getItem('articles');
-  if (storedArticles) {
-    // If articles are present in local storage, parse and display them
-    displayArticles(JSON.parse(storedArticles));
-    document.getElementById('loadingSpinner').classList.add('hidden');
-  } else {
-    // If articles are not present in local storage, make a fetch request
     fetch(serverurl + `/api/data?category=${category}`)
       .then(response => response.json())
       .then(data => {
@@ -269,7 +294,6 @@ function fetchAndDisplayArticles(category) {
         const articlesContainer = document.getElementById('gridid');
         articlesContainer.innerHTML = '<p>Error fetching articles</p>';
       });
-  }
 }
 
 
@@ -307,13 +331,12 @@ function displayArticles(articles) {
               <p class="text-black dark:text-white">
                 ${article.description}
               </p>
-              <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite(${i})">
-             <div id="staricon${i}" class="star-icon"></div>
+               <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite('${article.title}','${article.author}','${article.category}','${article.url}',${i})">
+              <div id="staricon${i}" class="star-icon"></div>
               </a>
             </div>
           </div>
         `;
-        //              <a href="#!" class="star-link" id="starlink${i}" onclick="toggleFavorite('${getLoggedInUser()}','${article.title}','${article.author}','${article.category}','${article.url}',${i})">
 
 
         articlesContainer.appendChild(articleElement);
@@ -479,7 +502,6 @@ function validateForm() {
       else{
         localStorage.setItem('name',username)
         handleUserRegistration(username,password,email,phone,selectedCategories,country,jobTitle,bio);
-        //openInterestModal()
           }
 }}
 
@@ -490,16 +512,17 @@ function closeInterestModal() {
 }
 
 
-async function addArticle(username,title, content, author, category, url) {
-  const apiUrl = serverUrl + '/api/add-article';
+async function addArticle(username, author, title, description, url, urlToImage, publishedAt) {
+  const apiUrl = serverurl + '/api/add-article';
 
   const articleData = {
     username,
-    title,
-    content,
     author,
-    category,
+    title,
+    description,
     url,
+    urlToImage,
+    publishedAt,
   };
   try {
     const response = await fetch(apiUrl, {
@@ -526,9 +549,10 @@ async function addArticle(username,title, content, author, category, url) {
   }
 }
 
-async function handleArticleAddition(username,title, content, author, category, url) {
+
+async function handleArticleAddition(username, author, title, description, url, urlToImage, publishedAt) {
   try {
-    const isArticleAdded = await addArticle(username,title, content, author, category, url);
+    const isArticleAdded = await addArticle(username, author, title, description, url, urlToImage, publishedAt);
     if (isArticleAdded) {
       alert('Article added successfully');
       // Additional actions after successful article addition
@@ -540,6 +564,7 @@ async function handleArticleAddition(username,title, content, author, category, 
     alert('An error occurred during article addition');
   }
 }
+
 
 
 function openarticl(index) {
@@ -584,6 +609,12 @@ if (loggedInUser) {
 checkLoggedInUser();
 
 
+// document.getElementById('gridid').addEventListener('click', function (event) {
+//   if (event.target.classList.contains('star-link')) {
+//     const articleIndex = event.target.dataset.index;
+//     toggleFavorite(articleIndex);
+//   }
+// });
 
 
 fetchAndDisplayArticles('general');
